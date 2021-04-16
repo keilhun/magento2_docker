@@ -1,0 +1,31 @@
+version: '3.8'
+services: 
+    web:
+        image: nginx:latest 
+        container_name: web
+        ports: 
+            - "80:80"
+        volumes: 
+            - ./docker/nginx.conf:/etc/nginx/conf.d/nginx.conf
+            - ./app:/app
+    php:
+        build:
+            context: ./docker
+            dockerfile: PHP.dockerfile
+        container_name: php_server
+        volumes: 
+            - ./app:/app
+    mysql:
+        image: mariadb:latest
+        container_name: mysql_server
+        environment:
+            MYSQL_ROOT_PASSWORD: 'secret'
+            MYSQL_USER: 'tutorial'
+            MYSQL_PASSWORD: 'secret'
+            MYSQL_DATABASE: 'tutorial'
+        volumes:
+            - mysqldata:/var/lib/mysql
+        ports:
+            - 3306:3306
+volumes:
+    mysqldata: {}
