@@ -1,7 +1,9 @@
 version: '3.8'
 services: 
     web:
-        image: nginx:latest 
+        build:
+            context: ./docker
+            dockerfile: Web.dockerfile
         container_name: web
         ports: 
             - "80:80"
@@ -24,9 +26,9 @@ services:
         container_name: mysql_server
         environment:
             MYSQL_ROOT_PASSWORD: 'secret'
-            MYSQL_USER: 'tutorial'
+            MYSQL_USER: 'maguser'
             MYSQL_PASSWORD: 'secret'
-            MYSQL_DATABASE: 'tutorial'
+            MYSQL_DATABASE: 'magento'
         volumes:
             - mysqldata:/var/lib/mysql
         ports:
