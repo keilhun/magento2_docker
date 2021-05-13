@@ -1,13 +1,14 @@
-FROM php:7.3-fpm
+ARG php_version
+FROM php:${php_version}-fpm
 ENV REFRESHED_AT 04-15-2021
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libwebp-dev \
-        libpng-dev \
-    && docker-php-ext-configure gd --with-jpeg-dir --with-freetype-dir --with-webp-dir \
-    && docker-php-ext-install -j$(nproc) gd
-
+        libpng-dev 
+    
+RUN if [ `echo "($php_version < 7.4)" | bc` -eq "1" ]; then docker-php-ext-configure gd --with-jpeg-dir --with-freetype-dir --with-webp-dir; else docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp; fi
+RUN docker-php-ext-install -j$(nproc) gd
 RUN apt update && apt -y install \
     libxml2-dev \
     libxslt-dev \
