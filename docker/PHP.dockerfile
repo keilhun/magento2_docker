@@ -1,13 +1,18 @@
 ARG php_version
 FROM php:${php_version}-fpm
+
+ARG php_version
+
 ENV REFRESHED_AT 04-15-2021
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libwebp-dev \
+        bc \
         libpng-dev 
     
-RUN if [ `echo "($php_version < 7.4)" | bc` -eq "1" ]; then docker-php-ext-configure gd --with-jpeg-dir --with-freetype-dir --with-webp-dir; else docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp; fi
+    # parameters for gd changed after PHP 7.4
+RUN if  [ `echo "($php_version < 7.4)" | bc` = "1" ]; then docker-php-ext-configure gd --with-jpeg-dir --with-freetype-dir --with-webp-dir; else docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp; fi
 RUN docker-php-ext-install -j$(nproc) gd
 RUN apt update && apt -y install \
     libxml2-dev \
@@ -24,7 +29,6 @@ RUN apt update && apt -y install \
     autoconf \
     automake \
     nasm \
-    bc \
     unzip \
     dnsutils
 
