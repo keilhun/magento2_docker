@@ -2,6 +2,7 @@ ARG php_version
 FROM php:${php_version}-fpm
 
 ARG php_version
+ARG magento_version
 
 ENV REFRESHED_AT 04-15-2021
 RUN apt-get update && apt-get install -y \
@@ -49,8 +50,10 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     php composer-setup.php && \
     php -r "unlink('composer-setup.php');" && \
     chmod +x composer.phar && \
-    mv composer.phar /usr/local/bin/composer && \
-    composer self-update --1
+    mv composer.phar /usr/local/bin/composer
+
+COPY version_check.php /root
+RUN if  [ `php /root/version_check.php $magento_version 2.4.2` -eq "0" ]; then composer self-update --1; fi
 
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 

@@ -16,6 +16,7 @@ services:
             dockerfile: PHP.dockerfile
             args:
                 php_version: ${PHP_VERSION}
+                magento_version: ${MAGENTO_VERSION}
         container_name: php_server-${APP_EXT}
         environment:
             XDEBUG_CONFIG: client_host=host.docker.internal
