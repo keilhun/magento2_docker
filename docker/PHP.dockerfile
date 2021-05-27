@@ -53,7 +53,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     mv composer.phar /usr/local/bin/composer
 
 COPY version_check.php /root
-RUN if  [ `php /root/version_check.php $magento_version 2.4.2` -eq "0" ]; then composer self-update --1; fi
+RUN if  [ `php /root/version_check.php $magento_version 2.4.2 '<'` -eq "1" ]; then composer self-update --1; fi
 
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 
